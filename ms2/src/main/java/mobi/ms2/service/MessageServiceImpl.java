@@ -21,9 +21,13 @@ public class MessageServiceImpl implements MessageService{
     public void initialProcess() {
         //The initial message
         Message initialMessage = new Message(UUID.randomUUID().toString(),"MS2", Ms.MS2,0);
-
-        //sending message
-        restTemplate.postForObject("lb://DISPATCHER/process",initialMessage,Message.class);
+        //Exception to insure the sending of the message to the destination
+        try {
+            //sending message
+            restTemplate.postForObject("lb://DISPATCHER/process",initialMessage,Message.class);
+        }catch (Exception e){
+            log.info(e.toString());
+        }
     }
 
     @Override
@@ -36,9 +40,13 @@ public class MessageServiceImpl implements MessageService{
             //Before sending message generating a new Id
             message.setId(UUID.randomUUID().toString());
 
-            //sending message
+            //Exception to insure the sending of the message to the destination
+            try {
+                //sending message
             restTemplate.postForObject("lb://DISPATCHER/process",message,Message.class);
-
+            }catch (Exception e){
+                log.info(e.toString());
+            }
         }
     }
 
