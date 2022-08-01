@@ -12,5 +12,6 @@ public class Message {
     private String id;
     private String body;
     private Ms source;
+    private Ms destination;
     private int counter;
 }

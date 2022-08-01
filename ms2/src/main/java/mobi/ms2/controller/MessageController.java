@@ -1,6 +1,7 @@
 package mobi.ms2.controller;
 
 import mobi.ms2.model.Message;
+import mobi.ms2.model.ReceivedMessage;
 import mobi.ms2.service.MessageService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,5 +28,10 @@ public class MessageController {
     void processMessage(@RequestBody Message message)
     {
         messageService.sendingMessage(message);
+    }
+
+    @PostMapping("/reaching")
+    void reachingMessage(@RequestBody ReceivedMessage receivedMessage){
+        messageService.receivingMessage(receivedMessage);
     }
 }

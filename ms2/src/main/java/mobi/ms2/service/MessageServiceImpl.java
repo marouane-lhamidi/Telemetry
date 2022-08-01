@@ -3,6 +3,7 @@ package mobi.ms2.service;
 import lombok.extern.slf4j.Slf4j;
 import mobi.ms2.enums.Ms;
 import mobi.ms2.model.Message;
+import mobi.ms2.model.ReceivedMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,7 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public void initialProcess() {
         //The initial message
-        Message initialMessage = new Message(UUID.randomUUID().toString(),"MS2", Ms.MS2,0);
+        Message initialMessage = new Message(UUID.randomUUID().toString(),"MS2", Ms.MS2, null,0);
 
         //sending message
         sendingProcess(initialMessage, "lb://DISPATCHER/process");
@@ -36,10 +37,19 @@ public class MessageServiceImpl implements MessageService{
             //Before sending message generating a new Id
             message.setId(UUID.randomUUID().toString());
 
+            ReceivedMessage receivedMessage = new ReceivedMessage(UUID.randomUUID().toString(),"Well received from source : "+message.getSource()+" to destination : "+Ms.MS2,message.getSource(),message.getDestination());
+
+            restTemplate.postForObject("lb://DISPATCHER/reaching",receivedMessage,ReceivedMessage.class);
+
             //sending message
             sendingProcess(message, "lb://DISPATCHER/process");
 
         }
+    }
+
+    @Override
+    public void receivingMessage(ReceivedMessage receivedMessage) {
+        log.info(receivedMessage.getReachingMsg());
     }
 
     public void sendingProcess(Message message, String destination){
